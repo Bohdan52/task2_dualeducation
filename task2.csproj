@@ -6,17 +6,25 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
+	<!-- Блок, який ми додали для ігнорування тестів -->
 	<ItemGroup>
-		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.12" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
-				<PrivateAssets>all</PrivateAssets>
-				<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		<Compile Remove="task2.Tests\**" />
+		<Content Remove="task2.Tests\**" />
+		<EmbeddedResource Remove="task2.Tests\**" />
+		<None Remove="task2.Tests\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.14" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.14" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.14" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.14">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.12">
-				<PrivateAssets>all</PrivateAssets>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.14">
+			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
