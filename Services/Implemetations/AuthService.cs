@@ -23,7 +23,7 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
     {
-        // Перевірка, чи існує користувач
+        // Перевірка, чи існує користувач                                                       
         if (await _userManager.FindByEmailAsync(dto.Email) is not null)
             throw new BadRequestException("Користувач з таким email вже існує.");
 
