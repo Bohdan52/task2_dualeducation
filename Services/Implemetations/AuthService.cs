@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using task2.Domain.Entities;
 using task2.Dtos.Auth;
+using task2.Exceptions;
 using task2.Services.Interfaces;
 
 namespace task2.Services.Implementations;
@@ -22,8 +23,9 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
     {
+        // Перевірка, чи існує користувач
         if (await _userManager.FindByEmailAsync(dto.Email) is not null)
-            throw new InvalidOperationException("Користувач з таким email вже існує.");
+            throw new BadRequestException("Користувач з таким email вже існує.");
 
         var user = new User
         {
@@ -35,8 +37,10 @@ public class AuthService : IAuthService
         };
 
         var result = await _userManager.CreateAsync(user, dto.Password);
+
+        // Якщо створення не вдалося (наприклад, пароль не відповідає вимогам)
         if (!result.Succeeded)
-            throw new InvalidOperationException(string.Join("; ", result.Errors.Select(e => e.Description)));
+            throw new BadRequestException(string.Join("; ", result.Errors.Select(e => e.Description)));
 
         return await GenerateTokenAsync(user);
     }
@@ -47,7 +51,7 @@ public class AuthService : IAuthService
                    ?? await _userManager.FindByEmailAsync(dto.UserNameOrEmail);
 
         if (user is null || !await _userManager.CheckPasswordAsync(user, dto.Password))
-            throw new UnauthorizedAccessException("Невірний логін або пароль.");
+            throw new UnauthorizedException("Невірний логін або пароль.");
 
         return await GenerateTokenAsync(user);
     }
