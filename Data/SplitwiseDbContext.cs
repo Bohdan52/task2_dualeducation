@@ -1,16 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using task2.Domain.Entities;
 
 namespace task2.Data;
 
-public class SplitwiseDbContext : DbContext
+// 1. Успадковуємо IdentityDbContext і вказуємо тип ключа Guid
+public class SplitwiseDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
     public SplitwiseDbContext(DbContextOptions<SplitwiseDbContext> options)
         : base(options) { }
 
-    public DbSet<User> Users => Set<User>();
+    // 2. DbSet<User> ми прибрали, бо він вже є в IdentityDbContext
+
     public DbSet<Group> Groups => Set<Group>();
     public DbSet<GroupMember> GroupMembers => Set<GroupMember>();
     public DbSet<Expense> Expenses => Set<Expense>();
@@ -20,10 +22,12 @@ public class SplitwiseDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // 3. Обов'язково викликаємо базовий метод для налаштування таблиць Identity
+        base.OnModelCreating(modelBuilder);
+
         // ---------- User ----------
         modelBuilder.Entity<User>(e =>
         {
-            e.HasIndex(u => u.Email).IsUnique();
             e.Property(u => u.Email).HasMaxLength(255).IsRequired();
             e.Property(u => u.FullName).HasMaxLength(100).IsRequired();
             e.Property(u => u.DefaultCurrency).HasMaxLength(3).IsRequired();
@@ -132,8 +136,6 @@ public class SplitwiseDbContext : DbContext
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
-
-        base.OnModelCreating(modelBuilder);
     }
 
     // Автоматично проставляє CreatedAt / UpdatedAt
